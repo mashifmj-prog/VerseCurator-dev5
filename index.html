@@ -1162,23 +1162,53 @@
 
         /* === NEW ENHANCEMENTS CSS === */
         
-        /* Share History Styles */
-        .history-section {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
+        /* Collapsible Sections */
+        .collapsible-section {
             margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
         }
 
-        .history-header {
+        .collapsible-btn {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
         }
 
+        .collapsible-btn:hover {
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .collapsible-btn i:last-child {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-btn.active i:last-child {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Share History Styles */
         .history-list {
             display: flex;
             flex-direction: column;
@@ -1414,6 +1444,15 @@
 
         .dark-mode .share-option.warning-platform::after {
             color: #000;
+        }
+
+        /* App Link Styling */
+        .app-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--primary-color);
+            cursor: help;
+            font-weight: 600;
         }
 
         /* Tablet and Desktop Styles */
@@ -1673,7 +1712,7 @@
                         </button>
                         <button class="btn btn-outline" id="scheduleButton">
                             <i class="fas fa-clock"></i>
-                            Remind Me
+                            Set Reminder
                         </button>
                     </div>
                 </div>
@@ -1721,32 +1760,37 @@
                 </div>
             </section>
 
-            <!-- NEW: Share History Section -->
-            <section class="history-section" id="historySection">
-                <div class="history-header">
-                    <h3>
+            <!-- NEW: Share History as Collapsible Section -->
+            <section class="collapsible-section">
+                <button class="collapsible-btn" id="toggleHistory">
+                    <span>
                         <i class="fas fa-history"></i>
                         Share History
-                    </h3>
-                    <button class="btn btn-outline" id="clearHistoryBtn">
-                        <i class="fas fa-trash"></i>
-                        Clear
-                    </button>
-                </div>
-                <div class="history-list" id="historyList">
-                    <!-- History items will be populated here -->
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="collapsible-content" id="historyContent">
+                    <div class="history-header">
+                        <h3>Recent Shares</h3>
+                        <button class="btn btn-outline" id="clearHistoryBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear All
+                        </button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be populated here -->
+                    </div>
                 </div>
             </section>
 
-            <!-- NEW: WhatsApp Broadcast Assistant -->
-            <section class="broadcast-section" id="broadcastSection">
-                <div class="section-header">
-                    <h3>
-                        <i class="fab fa-whatsapp"></i>
-                        WhatsApp Broadcast Assistant
-                    </h3>
-                </div>
-                
+            <!-- NEW: WhatsApp Broadcast as Button -->
+            <button class="btn btn-outline" id="toggleBroadcast" style="width: 100%; margin-bottom: 1.5rem;">
+                <i class="fab fa-whatsapp"></i>
+                WhatsApp Broadcast Assistant
+            </button>
+
+            <!-- Broadcast Section (Hidden by Default) -->
+            <div class="broadcast-section" id="broadcastSection" style="display: none;">
                 <div class="broadcast-tabs">
                     <button class="broadcast-tab active" data-tab="guide">Broadcast Guide</button>
                     <button class="broadcast-tab" data-tab="contacts">Contact Management</button>
@@ -1759,12 +1803,10 @@
                             <div class="step-content">
                                 <div class="step-title">Prepare Your Verse</div>
                                 <div class="step-description">
-                                    Copy the verse text with reference. The app automatically includes "Shared via VerseCurator" attribution.
+                                    Copy the verse text with reference. Recipients will receive the text with attribution.
                                 </div>
                                 <div class="copy-box" id="verseCopyBox">
                                     "The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness." - Lamentations 3:22-23
-                                    
-                                    Shared via VerseCurator - Beautiful Bible verse curation
                                     <button class="copy-btn" id="copyVerseForBroadcast">Copy</button>
                                 </div>
                             </div>
@@ -1785,7 +1827,7 @@
                             <div class="step-content">
                                 <div class="step-title">Select Recipients</div>
                                 <div class="step-description">
-                                    Choose up to 256 contacts from your VerseCurator contact list
+                                    Choose up to 256 contacts from your phone's contact list
                                 </div>
                             </div>
                         </div>
@@ -1803,14 +1845,14 @@
                 </div>
                 
                 <div class="tab-content" id="contactsTab">
-                    <h4>Managing Your VerseCurator Contacts</h4>
+                    <h4>Managing Your Phone Contacts for Broadcasts</h4>
                     <div class="broadcast-steps">
                         <div class="broadcast-step">
                             <div class="step-number">1</div>
                             <div class="step-content">
-                                <div class="step-title">Save Contacts</div>
+                                <div class="step-title">Save Contacts in Your Phone</div>
                                 <div class="step-description">
-                                    Save contacts with "VerseCurator" in their name for easy identification in your contacts list.
+                                    In your phone's contacts app, save recipients with "VerseCurator" in their name for easy identification.
                                 </div>
                             </div>
                         </div>
@@ -1818,9 +1860,9 @@
                         <div class="broadcast-step">
                             <div class="step-number">2</div>
                             <div class="step-content">
-                                <div class="step-title">Create Contact Group</div>
+                                <div class="step-title">Create WhatsApp Broadcast List</div>
                                 <div class="step-description">
-                                    Create a dedicated contact group called "VerseCurator Recipients" to organize your broadcast list.
+                                    In WhatsApp, create a broadcast list called "VerseCurator Recipients" to organize your verse sharing.
                                 </div>
                             </div>
                         </div>
@@ -1828,9 +1870,9 @@
                         <div class="broadcast-step">
                             <div class="step-number">3</div>
                             <div class="step-content">
-                                <div class="step-title">Regular Updates</div>
+                                <div class="step-title">Regular Contact Maintenance</div>
                                 <div class="step-description">
-                                    Regularly update your contact list and remove inactive numbers to maintain engagement.
+                                    Periodically update your phone's contact list and remove inactive numbers to maintain engagement.
                                 </div>
                             </div>
                         </div>
@@ -1840,13 +1882,13 @@
                             <div class="step-content">
                                 <div class="step-title">Respect Privacy</div>
                                 <div class="step-description">
-                                    Only share with contacts who have opted in to receive Bible verses. Respect privacy preferences.
+                                    Only share with contacts who have explicitly opted in to receive Bible verses. Respect privacy preferences.
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Custom Verses Section -->
             <section class="custom-section">
@@ -2037,7 +2079,7 @@
                 </div>
 
                 <div class="share-options-grid" id="textShareOptions">
-                    <!-- Text Sharing Options (Always include app link) -->
+                    <!-- Text Sharing Options -->
                     <button class="share-option share-with-link" id="copyText">
                         <div class="share-icon">
                             <i class="fas fa-copy"></i>
@@ -2062,7 +2104,19 @@
                         </div>
                         <span>SMS</span>
                     </button>
-                    <button class="share-option device-share share-with-link" id="shareDevice">
+                    <button class="share-option warning-platform" id="shareFacebook">
+                        <div class="share-icon">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <span>Facebook</span>
+                    </button>
+                    <button class="share-option warning-platform" id="shareInstagram">
+                        <div class="share-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <span>Instagram</span>
+                    </button>
+                    <button class="share-option device-share" id="shareDevice">
                         <div class="share-icon">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
@@ -2103,7 +2157,7 @@
         class VerseCurator {
             constructor() {
                 this.currentVerse = null;
-                this.verseHistory = []; // Store last 10 verses for previous button
+                this.verseHistory = [];
                 this.currentHistoryIndex = -1;
                 this.customVerses = JSON.parse(localStorage.getItem('customVerses')) || [];
                 this.favorites = JSON.parse(localStorage.getItem('favoriteVerses')) || [];
@@ -2151,6 +2205,9 @@
                 this.imageGenerator = new ImageGenerator();
                 this.historyManager = new HistoryManager();
                 this.broadcastManager = new BroadcastManager();
+
+                // Platform warnings - ONLY these platforms show warnings
+                this.WARNING_PLATFORMS = ['facebook', 'instagram', 'tiktok', 'snapchat'];
 
                 this.bibleVerses = {
                     morning: {
@@ -2209,7 +2266,13 @@
 
             // NEW: Enhanced features setup
             setupEnhancedFeatures() {
-                // Share history
+                // Share history collapsible
+                document.getElementById('toggleHistory').addEventListener('click', () => this.toggleHistory());
+                
+                // Broadcast section toggle
+                document.getElementById('toggleBroadcast').addEventListener('click', () => this.toggleBroadcast());
+                
+                // Share history clear
                 document.getElementById('clearHistoryBtn').addEventListener('click', () => this.historyManager.clearHistory());
                 
                 // Broadcast tabs
@@ -2226,15 +2289,41 @@
 
             // NEW: Enhanced share warnings - only for specific platforms
             setupEnhancedShareWarnings() {
-                const warningPlatforms = ['facebook', 'instagram', 'tiktok', 'snapchat'];
-                
                 // Add warning indicators to problematic platforms
                 document.querySelectorAll('.share-option').forEach(option => {
                     const platform = option.id.replace('share', '').toLowerCase();
-                    if (warningPlatforms.includes(platform)) {
+                    if (this.WARNING_PLATFORMS.includes(platform)) {
                         option.classList.add('warning-platform');
                     }
                 });
+
+                // Set up individual platform handlers
+                document.getElementById('shareFacebook').addEventListener('click', () => this.shareOnFacebook());
+                document.getElementById('shareInstagram').addEventListener('click', () => this.shareOnInstagram());
+            }
+
+            // NEW: Toggle history section
+            toggleHistory() {
+                const historyBtn = document.getElementById('toggleHistory');
+                const historyContent = document.getElementById('historyContent');
+                
+                historyBtn.classList.toggle('active');
+                if (historyContent.style.display === 'block') {
+                    historyContent.style.display = 'none';
+                } else {
+                    historyContent.style.display = 'block';
+                }
+            }
+
+            // NEW: Toggle broadcast section
+            toggleBroadcast() {
+                const broadcastSection = document.getElementById('broadcastSection');
+                if (broadcastSection.style.display === 'none') {
+                    broadcastSection.style.display = 'block';
+                    this.updateBroadcastCopyBox();
+                } else {
+                    broadcastSection.style.display = 'none';
+                }
             }
 
             setupEventListeners() {
@@ -2364,9 +2453,6 @@
                 this.currentVerse = this.verseHistory[this.currentHistoryIndex];
                 this.updateVerseDisplay();
                 this.incrementStat('versesViewed');
-                
-                // Update history index display for debugging
-                console.log(`Showing history index: ${this.currentHistoryIndex}`);
             }
 
             // Mode Management
@@ -2544,11 +2630,10 @@
                 if (!this.currentVerse) return;
                 
                 const verseText = `"${this.currentVerse.text}" - ${this.currentVerse.reference}`;
-                const broadcastText = `${verseText}\n\nShared via VerseCurator - Beautiful Bible verse curation\n👉 https://mashifmj-prog.github.io/VerseCurator/`;
-                
                 const copyBox = document.getElementById('verseCopyBox');
                 if (copyBox) {
-                    copyBox.innerHTML = broadcastText.replace(/\n/g, '<br>') + 
+                    // Sender sees clean text only
+                    copyBox.innerHTML = verseText + 
                         '<button class="copy-btn" id="copyVerseForBroadcast">Copy</button>';
                     
                     // Re-attach event listener
@@ -2752,7 +2837,7 @@
                 });
             }
 
-            // Enhanced share methods that always include app link
+            // Enhanced share methods that include app link for recipients only
             getShareText() {
                 if (!this.currentVerse) return { senderText: '', receiverText: '' };
                 
@@ -2760,8 +2845,8 @@
                 const appLink = '\n\n📖 Shared via VerseCurator - Beautiful Bible verse curation\n👉 https://mashifmj-prog.github.io/VerseCurator/';
                 
                 return {
-                    senderText: verseText, // What sender sees
-                    receiverText: verseText + appLink // What receiver gets
+                    senderText: verseText, // What sender sees (clean text)
+                    receiverText: verseText + appLink // What receiver gets (text + link)
                 };
             }
 
@@ -2771,7 +2856,7 @@
                 
                 const { receiverText } = this.getShareText();
                 navigator.clipboard.writeText(receiverText).then(() => {
-                    this.showNotification('Copied! (Includes app link for recipients)');
+                    this.showNotification('Copied! Recipients will see text with app attribution');
                     this.incrementStat('versesShared');
                     // NEW: Add to share history
                     this.historyManager.addToHistory(this.currentVerse, 'copy', true);
@@ -2815,28 +2900,26 @@
                 this.hideShareModal();
             }
 
+            // NEW: Platform-specific share methods with warnings
+            shareOnFacebook() {
+                if (!this.currentVerse) return;
+                // Show warning for Facebook
+                this.pendingShareAction = 'facebook';
+                this.showWarningModal();
+            }
+
+            shareOnInstagram() {
+                if (!this.currentVerse) return;
+                // Show warning for Instagram
+                this.pendingShareAction = 'instagram';
+                this.showWarningModal();
+            }
+
             shareViaDevice() {
                 if (!this.currentVerse) return;
                 
-                // Use refined warning logic - only warn for problematic platforms
-                if (this.shouldShowWarning()) {
-                    this.pendingShareAction = 'device';
-                    this.showWarningModal();
-                    return;
-                }
-                
-                // No warning needed for reliable platforms
+                // NO WARNING for Device Share - goes directly to native share
                 this.executeDeviceShare();
-            }
-
-            // REFINED WARNING LOGIC - Only for problematic platforms
-            shouldShowWarning() {
-                // Check if user is likely on mobile where Facebook/Instagram are common
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                // Only show warning on mobile devices where problematic apps are common
-                // Don't show warning for desktop or reliable platforms
-                return isMobile;
             }
 
             // ENHANCED: Modified share methods to track history
@@ -2887,9 +2970,18 @@
                 const action = this.pendingShareAction;
                 this.hideWarningModal();
                 
-                if (action === 'device') {
-                    this.executeDeviceShare();
+                if (action === 'facebook') {
+                    const { receiverText } = this.getShareText();
+                    const text = encodeURIComponent(receiverText);
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=https://mashifmj-prog.github.io/VerseCurator/&quote=${text}`, '_blank');
+                    this.incrementStat('versesShared');
+                    this.historyManager.addToHistory(this.currentVerse, 'facebook', true);
+                } else if (action === 'instagram') {
+                    // Instagram doesn't support direct sharing, open app
+                    this.showNotification('Please paste the copied text in Instagram');
+                    this.copyVerseToClipboard();
                 }
+                this.hideShareModal();
             }
 
             // ENHANCED: Image sharing with watermark options
@@ -3036,7 +3128,7 @@
                 const formattedDate = reminderDate.toISOString().replace(/-|:|\.\d+/g, '');
                 
                 const verseText = `"${this.currentVerse.text}" - ${this.currentVerse.reference}`;
-                const description = `Share this verse: ${verseText}\n\n📖 Via VerseCurator App: https://mashifmj-prog.github.io/VerseCurator/`;
+                const description = `Share this verse: ${verseText}\n\n📖 Via <span class="app-link" title="https://mashifmj-prog.github.io/VerseCurator/">VerseCurator App</span>`;
                 
                 // Create calendar event URL
                 const calendarUrl = [
@@ -3260,9 +3352,9 @@
                 const item = this.history.find(h => h.id === id);
                 if (!item) return;
 
-                const text = `"${item.verse}" - ${item.reference}\n\nShared via VerseCurator - Beautiful Bible verse curation\n👉 https://mashifmj-prog.github.io/VerseCurator/`;
+                const text = `"${item.verse}" - ${item.reference}\n\nShared via <span class="app-link" title="https://mashifmj-prog.github.io/VerseCurator/">VerseCurator App</span>`;
                 
-                navigator.clipboard.writeText(text).then(() => {
+                navigator.clipboard.writeText(text.replace(/<[^>]*>/g, '')).then(() => {
                     app.showNotification('Verse copied to clipboard!');
                 });
             }
